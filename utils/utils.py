@@ -1,6 +1,27 @@
 import torch 
 import numpy as np 
 import matplotlib.pyplot as plt 
+from spec_augment import TimeMask, FreqMask
+
+
+def print_one_image(dataset, idx):
+    row = dataset.iloc[idx]
+
+    image_pixels = np.array(row[:8192], dtype=np.float64)
+    label = row.labels
+
+    image = np.resize(image_pixels, (64, 128))  # 64 * 128 = 8192
+
+    plt.imshow(image)
+    plt.title(label)
+    plt.show()
+
+
+def get_train_tranform():
+    return T.Compose([
+        TimeMask(T = 15, num_masks = 4),
+        FreqMask(F = 15, num_masks = 4)
+    ])
 
 
 def multiclass_accuracy(y_pred,y_true):
